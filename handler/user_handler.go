@@ -3,6 +3,7 @@ package handler
 import (
 	"erp/models"
 	"erp/service"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -44,4 +45,16 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"token": t})
+}
+
+func (h *UserHandler) GetUserHandler(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	}
+	user, err := h.UserService.GetUser(id)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	}
+	return c.JSON(user)
 }

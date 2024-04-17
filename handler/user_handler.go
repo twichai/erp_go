@@ -34,9 +34,9 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 		return err
 	}
 	claims := jwt.MapClaims{
-		"name":  "John Doe",
-		"admin": true,
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+		"user": user,
+		"role": "admin",
+		"exp":  time.Now().Add(time.Hour * 72).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := token.SignedString([]byte("secret"))

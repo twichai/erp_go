@@ -3,11 +3,14 @@ package handler
 import (
 	"erp/models"
 	"erp/service"
+	"log"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 )
 
 type UserHandler struct {
@@ -39,7 +42,11 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 		"exp":  time.Now().Add(time.Hour * 72).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	t, err := token.SignedString([]byte("secret"))
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+	t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY_JWT")))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}

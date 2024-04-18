@@ -21,12 +21,12 @@ func (h *UserHandler) CreateUserHandler(c *fiber.Ctx) error {
 	user := new(models.User)
 	user.Role = "customer"
 	if err := c.BodyParser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 	if err := h.UserService.CreateUser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
-	return c.JSON(user)
+	return c.Status(fiber.StatusOK).JSON(user)
 }
 
 func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {

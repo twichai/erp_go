@@ -19,6 +19,7 @@ type UserHandler struct {
 
 func (h *UserHandler) CreateUserHandler(c *fiber.Ctx) error {
 	user := new(models.User)
+	user.Role = "customer"
 	if err := c.BodyParser(user); err != nil {
 		return err
 	}
@@ -33,7 +34,8 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(user); err != nil {
 		return err
 	}
-	if err := h.UserService.Login(user); err != nil {
+	user, err := h.UserService.Login(user)
+	if err != nil {
 		return err
 	}
 	claims := jwt.MapClaims{
@@ -42,7 +44,7 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 		"exp":  time.Now().Add(time.Hour * 72).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	err := godotenv.Load(".env")
+	err = godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}

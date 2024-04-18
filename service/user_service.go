@@ -17,6 +17,11 @@ func (s *UserService) Login(user *models.User) (*models.User, error) {
 	return s.UserRepo.Login(user)
 }
 
-func (s *UserService) GetUser(id int) (*models.User, error) {
+func (s *UserService) GetUser(id uint) (*models.User, error) {
 	return s.UserRepo.GetUser(id)
+}
+
+func (s *UserService) UpdateUser(id uint, user *models.User) (*models.User, error) {
+	return s.UserRepo.UpdateUser(id, user)
+
 }

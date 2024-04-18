@@ -67,5 +67,6 @@ func main() {
 	app.Get("/me", userHandler.GetMe)
 
 	app.Get("/users/:id", userHandler.GetUserHandler)
+	app.Put("/users/:id", userHandler.UpdateUserHandler)
 	log.Fatal(app.Listen(":8000"))
 }

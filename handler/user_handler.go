@@ -21,22 +21,22 @@ func (h *UserHandler) CreateUserHandler(c *fiber.Ctx) error {
 	user := new(models.User)
 	user.Role = "customer"
 	if err := c.BodyParser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 	if err := h.UserService.CreateUser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(err.Error())
 	}
-	return c.JSON(user)
+	return c.Status(fiber.StatusOK).JSON(user)
 }
 
 func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 	user, err := h.UserService.Login(user)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 	claims := jwt.MapClaims{
 		"user": user,
@@ -50,10 +50,10 @@ func (h *UserHandler) LoginHandler(c *fiber.Ctx) error {
 	}
 	t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY_JWT")))
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).JSON(err.Error())
 	}
 
-	return c.JSON(fiber.Map{"token": t})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t})
 }
 
 func (h *UserHandler) GetUserHandler(c *fiber.Ctx) error {
@@ -65,11 +65,11 @@ func (h *UserHandler) GetUserHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
-	return c.JSON(user)
+	return c.Status(fiber.StatusOK).JSON(user)
 }
 
 func (h *UserHandler) GetMe(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	return c.JSON(claims)
+	return c.Status(fiber.StatusOK).JSON(claims)
 }

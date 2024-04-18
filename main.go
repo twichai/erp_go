@@ -64,6 +64,8 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("SECRET_KEY_JWT"))},
 	}))
 
+	app.Get("/me", userHandler.GetMe)
+
 	app.Get("/users/:id", userHandler.GetUserHandler)
 	log.Fatal(app.Listen(":8000"))
 }

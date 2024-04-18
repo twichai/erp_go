@@ -67,3 +67,9 @@ func (h *UserHandler) GetUserHandler(c *fiber.Ctx) error {
 	}
 	return c.JSON(user)
 }
+
+func (h *UserHandler) GetMe(c *fiber.Ctx) error {
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	return c.JSON(claims)
+}

@@ -15,7 +15,7 @@ func (r *UserRepositoryGrom) CreateUser(user *models.User) error {
 }
 
 func (r *UserRepositoryGrom) Login(user *models.User) (*models.User, error) {
-	err := r.DB.Where(&models.User{Username: user.Username, Password: user.Password}).First(&user).Error
+	err := r.DB.Where("Username=? AND Password=?", user.Username, user.Password).First(&user).Error
 	return user, err
 }
 

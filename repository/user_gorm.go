@@ -19,8 +19,14 @@ func (r *UserRepositoryGrom) Login(user *models.User) (*models.User, error) {
 	return user, err
 }
 
-func (r *UserRepositoryGrom) GetUser(id int) (*models.User, error) {
+func (r *UserRepositoryGrom) GetUser(id uint) (*models.User, error) {
 	user := models.User{}
 	err := r.DB.First(&user, id).Error
 	return &user, err
+}
+
+func (r *UserRepositoryGrom) UpdateUser(id uint, user *models.User) (*models.User, error) {
+	user.ID = id
+	err := r.DB.Save(user).Error
+	return user, err
 }
